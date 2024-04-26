@@ -1,5 +1,5 @@
 ## Authentication-UI
-Authentication UI in React-Native
+Basic Authentication UI in React-Native
 
 ## Validation
 -  names: 3 minimum characters
