@@ -12,10 +12,10 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
-import ButtonCustom from "../components/ButtonCustom/ButtonCustom";
-import Buttons from "../components/ButtonCustom/Buttons";
-import LoadingButtonUp from "../components/ButtonCustom/signUpButton/LoadingButtonUp";
-import { registerUser } from "../services/UserApi";
+import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
+import Buttons from "../../components/ButtonCustom/Buttons";
+import LoadingButtonUp from "../../components/ButtonCustom/signUpButton/LoadingButtonUp";
+import { registerUser } from "../../services/UserApi";
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -33,16 +33,6 @@ const validationSchema = yup.object().shape({
     .trim()
     .min(3, "lastName is Invalid")
     .required("lastName is required"),
-    phoneNumber: yup
-    .string()
-    .trim()
-    .min(3, "phoneNumber is Invalid")
-    .required("phoneNumber is required"),
-    preferredCurrency: yup
-    .string()
-    .trim()
-    .min(3, "preferredCurrency is Invalid")
-    .required("preferredCurrency is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup
     .string()
@@ -162,26 +152,6 @@ const SignUpScreen = () => {
                 />
                 {touched.lastName && errors.lastName && (
                   <Text style={styles.errorText}>{errors.lastName}</Text>
-                )}
-                <TextInput
-                  style={styles.input}
-                  placeholder="phoneNumber"
-                  onChangeText={handleChange("phoneNumber")}
-                  onBlur={handleBlur("phoneNumber")}
-                  value={values.phoneNumber}
-                />
-                {touched.phoneNumber && errors.phoneNumber && (
-                  <Text style={styles.errorText}>{errors.phoneNumber}</Text>
-                )}
-                <TextInput
-                  style={styles.input}
-                  placeholder="preferredCurrency"
-                  onChangeText={handleChange("preferredCurrency")}
-                  onBlur={handleBlur("preferredCurrency")}
-                  value={values.preferredCurrency}
-                />
-                {touched.preferredCurrency && errors.preferredCurrency && (
-                  <Text style={styles.errorText}>{errors.preferredCurrency}</Text>
                 )}
 
                 <TextInput

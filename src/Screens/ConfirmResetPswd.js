@@ -7,7 +7,7 @@ import {
   TextInput,
   Platform
 } from "react-native";
-import ButtonCustom from "../components/ButtonCustom/ButtonCustom";
+import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import {useNavigation} from "@react-navigation/native"
 
 

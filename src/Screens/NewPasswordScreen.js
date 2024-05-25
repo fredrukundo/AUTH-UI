@@ -9,7 +9,7 @@ import {
   Platform,
   Keyboard,
 } from "react-native";
-import ButtonCustom from "../components/ButtonCustom/ButtonCustom";
+import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { FontAwesome } from "@expo/vector-icons";

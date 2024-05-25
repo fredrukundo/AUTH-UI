@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Keyboard } from "react-native";
-import ButtonCustom from "../components/ButtonCustom/ButtonCustom";
+import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import {useNavigation, useRoute} from "@react-navigation/native"
 
 const CheckEmailScreen = () => {

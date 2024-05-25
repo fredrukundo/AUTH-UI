@@ -1,13 +1,12 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import SignInScreen from "../Screens/SignInScreen";
-import SignUpScreen from "../Screens/SignUpScreen";
-import ImageUpload from "../Screens/ImageUpload";
-import NewPasswordScreen from "../Screens/NewPasswordScreen";
-import ForgotPassword from "../Screens/ForgotPassword";
-import ConfirmResetPswd from "../Screens/ConfirmResetPswd";
-import CheckEmailScreen from "../Screens/ConfirmEmailScreen";
-
+import SignInScreen from "../src/Screens/SignInScreen";
+import ImageUpload from "../src/Screens/ImageUpload";
+import NewPasswordScreen from "../src/Screens/NewPasswordScreen";
+import ForgotPassword from "../src/Screens/ForgotPassword";
+import ConfirmResetPswd from "../src/Screens/ConfirmResetPswd";
+import CheckEmailScreen from "../src/Screens/ConfirmEmailScreen";
+import SignUpScreen from "../src/Screens/SignUpScreen";
 
 const AuthStack = createNativeStackNavigator();
 

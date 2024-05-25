@@ -7,7 +7,7 @@ import {
   TextInput,
   Platform
 } from "react-native";
-import ButtonCustom from "../components/ButtonCustom/ButtonCustom";
+import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import { Formik } from "formik";
 import * as yup from "yup";
 import {useNavigation} from "@react-navigation/native"

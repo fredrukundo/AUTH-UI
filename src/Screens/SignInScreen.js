@@ -10,22 +10,23 @@ import {
   Text,
   Platform,
 } from "react-native";
-import Logo from "../assets/images/logo_safe.png";
-import ButtonCustom from "../components/ButtonCustom/ButtonCustom";
-import Buttons from "../components/ButtonCustom/Buttons";
+import Logo from "../../assets/images/logo_safe.png";
+import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
+import Buttons from "../../components/ButtonCustom/Buttons";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { FontAwesome } from "@expo/vector-icons";
-import LoadButtonIn from "../components/ButtonCustom/signInButton/LoadButtonIn";
+import LoadButtonIn from "../../components/ButtonCustom/signInButton/LoadButtonIn";
 import { useNavigation } from "@react-navigation/native";
-import { loginUser } from "../services/UserApi";
+// import { signIn } from "aws-amplify/auth";
 
 
 const validationSchema = yup.object().shape({
-  email: yup
-     .string()
-     .email("Invalid email")
-     .required("Email is required"),
+  username: yup
+    .string()
+    .trim()
+    .min(3, "username is Invalid")
+    .required("username is required"),
   password: yup
     .string()
     .min(6, "Password must be at least 6 characters")
@@ -59,19 +60,39 @@ const SignInScreen = () => {
      //console.warn('Sign up');
   };
 
+  // const handleLogin = async (values, formikActions) => {
+  //   try {
+  //     const user = await signIn({
+  //       username: values.username,
+  //       password: values.password,
+  //     });
+  //     console.log('Signed in user:', user);
+  //   } catch (error) {
+  //     if (error.code) {
+  //       switch (error.code) {
+  //         case 'UserNotFoundException':
+  //           console.error('User does not exist.');
+  //           break;
+  //         case 'NotAuthorizedException':
+  //           console.error('Incorrect username or password.');
+  //           break;
+  //         case 'UserNotConfirmedException':
+  //           console.error('User not confirmed.');
+  //           break;
+  //         default:
+  //           console.error('An unknown error occurred:', error.message);
+  //       }
+  //     } else {
+  //       console.error('An unknown error occurred:', error);
+  //     }
+  //     formikActions.resetForm();
+  //   }
+  // }
+  
   const handleLogin = async (values, formikActions) => {
-    try {
-        const tokenData = await loginUser(values.email, values.password);
-        console.log("Login successful:", tokenData);
-        // Navigate to the next screen or perform other actions upon successful login
-    } catch (error) {
-        console.error("Login failed:", error);
-        formikActions.setFieldError("password", "Incorrect email or password");
-    } finally {
-        formikActions.setSubmitting(false);
-    }
-};
-
+    console.log(values.username);
+    formikActions.resetForm();
+  }
 
 
   return (
@@ -89,7 +110,7 @@ const SignInScreen = () => {
             />
           </View>
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ username: "", password: "" }}
             validationSchema={validationSchema}
             onSubmit={handleLogin}
           >
@@ -105,14 +126,13 @@ const SignInScreen = () => {
               <View>
                 <TextInput
                   style={styles.input}
-                  placeholder="Email or Username"
-                  keyboardType="email-address"
-                  onChangeText={handleChange("email")}
-                  onBlur={handleBlur("email")}
-                  value={values.email}
+                  placeholder="username"
+                  onChangeText={handleChange("username")}
+                  onBlur={handleBlur("username")}
+                  value={values.username}
                 />
-                {touched.email && errors.email && (
-                  <Text style={styles.errorText}>{errors.email}</Text>
+                {touched.username && errors.username && (
+                  <Text style={styles.errorText}>{errors.username}</Text>
                 )}
 
                 <View style={styles.passwordContainer}>
