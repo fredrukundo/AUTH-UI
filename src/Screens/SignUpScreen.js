@@ -45,6 +45,7 @@ const validationSchema = yup.object().shape({
 });
 
 const SignUpScreen = () => {
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   // functions
@@ -71,6 +72,7 @@ const SignUpScreen = () => {
     //console.warn("sing in");
   };
 
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -90,11 +92,12 @@ const SignUpScreen = () => {
               email: "",
               password: "",
               repeatPassword: "",
-              phoneNumber: "",
+              phoneNumber: "+123456789",
               gender: "not set",
               birthDate: "1990-01-01",
               nationality: "not set",
-              preferredCurrency: "",
+              preferredCurrency: "USD",
+              lang: "en",
             }}
             validationSchema={validationSchema}
            
@@ -107,7 +110,7 @@ const SignUpScreen = () => {
                 console.error("Registration failed:", error);
                 // Handle errors, e.g., display error message to the user
               } finally {
-                formikActions.resetForm();
+                //formikActions.resetForm();
                 formikActions.setSubmitting(false);
               }
             }}
@@ -327,3 +330,4 @@ const styles = StyleSheet.create({
 });
 
 export default SignUpScreen;
+
