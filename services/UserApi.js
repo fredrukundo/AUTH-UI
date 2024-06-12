@@ -1,19 +1,26 @@
 import axios from "axios";
-import {API_BASE_URL, KEYCLOAK_BASE_URL} from "@env"
+import { AxiosContext } from "../src/contexts/AxiosContext";
+import React, {useContext} from 'react';
 
 
+
+const publicAxios = axios.create({
+    baseURL: 'http://ec2-3-66-47-131.eu-central-1.compute.amazonaws.com/api',
+  });
 export const registerUser = async (userData) => {
+    //const { publicAxios} = useContext(AxiosContext);
+    
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/users`, userData);
+        const response = await publicAxios.post(`/users`, userData);
         if (response.status === 200) {
             console.warn("User registered successfully");
             return true;
         } else {
-            console.warn("User registration failed:", response.data.message);
+            console.warn("User registration failed:", response.data);
             return false;
         }
     } catch (error) {
-        console.error("Error during registration:", error.message);
+        console.error("Error during registration:", error);
         return false;
     }
 };
