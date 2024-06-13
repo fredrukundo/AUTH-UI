@@ -25,26 +25,7 @@ export const registerUser = async (userData) => {
     }
 };
 
-
-export const loginUser = async (email, password) => {
-    try {
-        const response = await axios.post(
-            `${KEYCLOAK_BASE_URL}/realms/travelmate/protocol/openid-connect/token`,
-            {
-                client_id: "travelmate",
-                username: email,
-                password: password,
-                grant_type: "password"
-            }
-        );
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-};
-
 export default {
     registerUser,
-    loginUser,
 };
 

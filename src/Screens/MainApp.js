@@ -1,28 +1,33 @@
 import React, {useCallback, useContext, useEffect, useState} from 'react';
-import * as Keychain from 'react-native-keychain';
-import Spinner from '../../components/Spinner';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Navigation from '../../Navigations/navigation';
 import { AuthContext } from '../contexts/AuthContext';
 import HomeScreen from '../HomeScreen';
 
 const MainApp = () => {
   const authContext = useContext(AuthContext);
-  const [status, setStatus] = useState('loading');
+ 
 
   const loadJWT = useCallback(async () => {
     try {
-      const value = await Keychain.getGenericPassword();
-      const jwt = JSON.parse(value.password);
+      const value = await AsyncStorage.getItem('token');
+      if (value !== null) {
+        const jwt = JSON.parse(value);
 
-      authContext.setAuthState({
-        accessToken: jwt.accessToken || null,
-        refreshToken: jwt.refreshToken || null,
-        authenticated: jwt.accessToken !== null,
-      });
-      setStatus('success');
+        authContext.setAuthState({
+          accessToken: jwt.accessToken || null,
+          refreshToken: jwt.refreshToken || null,
+          authenticated: jwt.accessToken !== null,
+        });
+      } else {
+        authContext.setAuthState({
+          accessToken: null,
+          refreshToken: null,
+          authenticated: false,
+        });
+      }
     } catch (error) {
-      setStatus('error');
-      console.log(`Keychain Error: ${error.message}`);
+      console.log(`AsyncStorage Error: ${error.message}`);
       authContext.setAuthState({
         accessToken: null,
         refreshToken: null,
@@ -35,9 +40,6 @@ const MainApp = () => {
     loadJWT();
   }, [loadJWT]);
 
-  if (status === 'loading') {
-    return <Spinner />;
-  }
 
   if (authContext?.authState?.authenticated === false) {
     return <Navigation />;

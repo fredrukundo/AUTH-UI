@@ -1,8 +1,8 @@
-import React, {createContext, useContext} from 'react';
+import React, {createContext, useContext, useEffect} from 'react';
 import axios from 'axios';
 import {AuthContext} from './AuthContext';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
-import * as Keychain from 'react-native-keychain';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AxiosContext = createContext();
 const {Provider} = AxiosContext;
@@ -18,58 +18,71 @@ const AxiosProvider = ({children}) => {
     baseURL: 'http://ec2-3-66-47-131.eu-central-1.compute.amazonaws.com/api',
   });
 
-  const token = authContext.getAccessToken();
+  useEffect(() => {
+    const setAuthHeader = async () => {
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        const { accessToken } = JSON.parse(token);
+        authAxios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+      }
+    };
+
+    setAuthHeader();
+  }, [authContext.authState.accessToken]);
+
   authAxios.interceptors.request.use(
-    
     config => {
-      if (!token) {
+      const token = authContext.getAccessToken();
+      if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-
       return config;
     },
     error => {
       return Promise.reject(error);
-    },
+    }
   );
 
-  const refreshAuthLogic = failedRequest => {
-    const data = {
-      refreshToken: authContext.authState.refreshToken,
-    };
+  const refreshAuthLogic = async failedRequest => {
+    const token = await AsyncStorage.getItem('token');
+    if (token) {
+      const { refreshToken } = JSON.parse(token);
 
-    const options = {
-      method: 'POST',
-      data,
-      url: 'http://ec2-3-66-47-131.eu-central-1.compute.amazonaws.com/api/refreshToken',
-    };
+      const options = {
+        method: 'POST',
+        data: { refreshToken },
+        url: 'http://ec2-3-66-47-131.eu-central-1.compute.amazonaws.com/api/refreshToken',
+      };
 
-    return axios(options)
-      .then(async tokenRefreshResponse => {
-        failedRequest.response.config.headers.Authorization =
-          'Bearer ' + tokenRefreshResponse.data.accessToken;
+      return axios(options)
+        .then(async tokenRefreshResponse => {
+          const { accessToken } = tokenRefreshResponse.data;
 
-        authContext.setAuthState({
-          ...authContext.authState,
-          accessToken: tokenRefreshResponse.data.accessToken,
+          authContext.setAuthState({
+            ...authContext.authState,
+            accessToken: accessToken,
+          });
+
+          await AsyncStorage.setItem(
+            'token',
+            JSON.stringify({
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+            })
+          );
+
+          failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
+
+          return Promise.resolve();
+        })
+        .catch(e => {
+          authContext.setAuthState({
+            accessToken: null,
+            refreshToken: null,
+            authenticated: false,
+          });
         });
-
-        await Keychain.setGenericPassword(
-          'token',
-          JSON.stringify({
-            accessToken: tokenRefreshResponse.data.accessToken,
-            refreshToken: authContext.authState.refreshToken,
-          }),
-        );
-
-        return Promise.resolve();
-      })
-      .catch(e => {
-        authContext.setAuthState({
-          accessToken: null,
-          refreshToken: null,
-        });
-      });
+    }
   };
 
   createAuthRefreshInterceptor(authAxios, refreshAuthLogic, {});
@@ -79,7 +92,8 @@ const AxiosProvider = ({children}) => {
       value={{
         authAxios,
         publicAxios,
-      }}>
+      }}
+    >
       {children}
     </Provider>
   );
